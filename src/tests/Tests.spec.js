@@ -7,12 +7,12 @@ import { Trend, Rate } from 'k6/metrics';
 export const searchDuration = new Trend('search_anime_duration', true);
 export const detailsDuration = new Trend('get_details_duration', true);
 export const charactersDuration = new Trend('get_characters_duration', true);
-
 export const RateContentOK = new Rate('content_OK');
 
 export const options = {
   thresholds: {
     http_req_failed: ['rate<0.25'],
+
     http_req_duration: ['p(90)<6800'],
 
     search_anime_duration: ['p(90)<6800'],
@@ -40,39 +40,35 @@ export default function () {
     }
   };
 
+  sleep(Math.random() * 15);
+
   const OK = 200;
 
   const resSearch = http.get(`${baseUrl}/anime?q=Re:Zero&limit=1`, params);
-
   searchDuration.add(resSearch.timings.duration);
   RateContentOK.add(resSearch.status === OK);
-
   check(resSearch, {
     'GET Search "Re:Zero" - Status 200': () => resSearch.status === OK
   });
 
-  sleep(Math.random() * 30 + 10);
+  sleep(Math.random() * 30 + 30);
 
   const animeId = 31240;
   const resDetails = http.get(`${baseUrl}/anime/${animeId}`, params);
-
   detailsDuration.add(resDetails.timings.duration);
   RateContentOK.add(resDetails.status === OK);
-
   check(resDetails, {
     'GET Anime Details - Status 200': () => resDetails.status === OK
   });
 
-  sleep(Math.random() * 30 + 10);
+  sleep(Math.random() * 30 + 30);
 
   const resChars = http.get(`${baseUrl}/anime/${animeId}/characters`, params);
-
   charactersDuration.add(resChars.timings.duration);
   RateContentOK.add(resChars.status === OK);
-
   check(resChars, {
     'GET Anime Characters - Status 200': () => resChars.status === OK
   });
 
-  sleep(Math.random() * 20 + 20);
+  sleep(Math.random() * 10 + 5);
 }
