@@ -34,13 +34,15 @@ export function handleSummary(data) {
 
 export default function () {
   const baseUrl = 'https://api.jikan.moe/v4';
+  
   const params = {
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     }
   };
 
-  sleep(Math.random() * 15);
+  sleep(Math.random() * 45);
 
   const OK = 200;
 
@@ -51,7 +53,7 @@ export default function () {
     'GET Search "Re:Zero" - Status 200': () => resSearch.status === OK
   });
 
-  sleep(Math.random() * 30 + 30);
+  sleep(Math.random() * 30 + 40);
 
   const animeId = 31240;
   const resDetails = http.get(`${baseUrl}/anime/${animeId}`, params);
@@ -61,7 +63,7 @@ export default function () {
     'GET Anime Details - Status 200': () => resDetails.status === OK
   });
 
-  sleep(Math.random() * 30 + 30);
+  sleep(Math.random() * 30 + 40);
 
   const resChars = http.get(`${baseUrl}/anime/${animeId}/characters`, params);
   charactersDuration.add(resChars.timings.duration);
