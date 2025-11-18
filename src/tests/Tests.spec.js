@@ -12,13 +12,15 @@ export const RateContentOK = new Rate('content_OK');
 export const options = {
   thresholds: {
     http_req_failed: ['rate<0.25'],
+
     http_req_duration: ['p(90)<6800'],
+
     search_anime_duration: ['p(90)<6800'],
     content_OK: ['rate>0.75']
   },
   stages: [
     { duration: '10s', target: 7 },
-    { duration: '2m50s', target: 92 }, 
+    { duration: '2m50s', target: 92 },
     { duration: '30s', target: 0 }
   ]
 };
@@ -40,48 +42,30 @@ export default function () {
     }
   };
 
-  sleep(Math.random() * 40);
+  sleep(Math.random() * 45);
 
   const OK = 200;
 
-  let resSearch = http.get(`${baseUrl}/anime?q=Re:Zero&limit=1`, params);
-  
-  if (resSearch.status === 429) {
-    sleep(2);
-    resSearch = http.get(`${baseUrl}/anime?q=Re:Zero&limit=1`, params);
-  }
-
+  const resSearch = http.get(`${baseUrl}/anime?q=Re:Zero&limit=1`, params);
   searchDuration.add(resSearch.timings.duration);
   RateContentOK.add(resSearch.status === OK);
   check(resSearch, {
     'GET Search "Re:Zero" - Status 200': () => resSearch.status === OK
   });
 
-  sleep(Math.random() * 30 + 30);
+  sleep(Math.random() * 30 + 40);
 
   const animeId = 31240;
-  let resDetails = http.get(`${baseUrl}/anime/${animeId}`, params);
-
-  if (resDetails.status === 429) {
-    sleep(2);
-    resDetails = http.get(`${baseUrl}/anime/${animeId}`, params);
-  }
-
+  const resDetails = http.get(`${baseUrl}/anime/${animeId}`, params);
   detailsDuration.add(resDetails.timings.duration);
   RateContentOK.add(resDetails.status === OK);
   check(resDetails, {
     'GET Anime Details - Status 200': () => resDetails.status === OK
   });
 
-  sleep(Math.random() * 30 + 30);
+  sleep(Math.random() * 30 + 40);
 
-  let resChars = http.get(`${baseUrl}/anime/${animeId}/characters`, params);
-
-  if (resChars.status === 429) {
-    sleep(2);
-    resChars = http.get(`${baseUrl}/anime/${animeId}/characters`, params);
-  }
-
+  const resChars = http.get(`${baseUrl}/anime/${animeId}/characters`, params);
   charactersDuration.add(resChars.timings.duration);
   RateContentOK.add(resChars.status === OK);
   check(resChars, {
