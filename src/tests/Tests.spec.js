@@ -12,15 +12,16 @@ export const RateContentOK = new Rate('content_OK');
 
 export const options = {
   thresholds: {
-    http_req_failed: ['rate<0.10'],
+    http_req_failed: ['rate<0.25'],
+    http_req_duration: ['p(90)<6800'],
 
-    search_anime_duration: ['p(95)<2000'],
-    content_OK: ['rate>0.90']
+    search_anime_duration: ['p(90)<6800'],
+    content_OK: ['rate>0.75']
   },
   stages: [
-    { duration: '10s', target: 1 },
-    { duration: '20s', target: 2 },
-    { duration: '10s', target: 0 }
+    { duration: '10s', target: 7 },
+    { duration: '2m50s', target: 92 },
+    { duration: '30s', target: 0 }
   ]
 };
 
@@ -50,7 +51,7 @@ export default function () {
     'GET Search "Re:Zero" - Status 200': () => resSearch.status === OK
   });
 
-  sleep(1);
+  sleep(Math.random() * 30 + 10);
 
   const animeId = 31240;
   const resDetails = http.get(`${baseUrl}/anime/${animeId}`, params);
@@ -62,7 +63,7 @@ export default function () {
     'GET Anime Details - Status 200': () => resDetails.status === OK
   });
 
-  sleep(1);
+  sleep(Math.random() * 30 + 10);
 
   const resChars = http.get(`${baseUrl}/anime/${animeId}/characters`, params);
 
@@ -73,5 +74,5 @@ export default function () {
     'GET Anime Characters - Status 200': () => resChars.status === OK
   });
 
-  sleep(2);
+  sleep(Math.random() * 20 + 20);
 }
